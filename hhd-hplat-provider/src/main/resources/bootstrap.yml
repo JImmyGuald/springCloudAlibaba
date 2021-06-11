@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: nacos-provider
+  cloud:  #nacos注册中心地址的配置法
+    nacos:
+      config:
+        server-addr: localhost:8848  # nacos 注册中心的地址
+        file-extension: yaml
