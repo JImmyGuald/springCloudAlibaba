@@ -1,0 +1,16 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: host_route
+          uri: http://localhost:8085
+          predicates:
+            - Path=/a/**
+          filters:
+            - StripPrefix=1
+        - id: host_route
+          uri: http://localhost:8085
+          predicates:
+            - Path=/b/**
+          filters:
+            - StripPrefix=1
