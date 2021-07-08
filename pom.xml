@@ -30,6 +30,7 @@
     <modules>
         <module>hhd-hplat-provider</module>
         <module>hhd-hplat-consumer</module>
+        <module>spring-cloud-gateway</module>
     </modules>
     <dependencyManagement>
         <dependencies>
