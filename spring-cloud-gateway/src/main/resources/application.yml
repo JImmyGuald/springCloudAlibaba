@@ -13,27 +13,49 @@ spring:
           uri: lb://nacos-provider # lb 开启负载均衡
           predicates:
             - Path=/echo/**   #断言,路径相匹配的进行路由
+          filters:
+            # redis限流 ， filter名称必须是RequestRateLimiter
+          - name: RequestRateLimiter
+            args:
+              # 使用SpEL名称引用Bean，与上面新建的RateLimiterConfig类中的bean的name相同
+              key-resolver: '#{@remoteAddrKeyResolver}'
+              # 每秒填充令牌数量
+              redis-rate-limiter.replenishRate: 1
+              # 令牌桶最大容量
+              redis-rate-limiter.burstCapacity: 10
+        - id: host_route
+          uri: http://localhost:8084
+          predicates:
+            - Path=/rpcv5/**
+          filters:
+          - name: Hystrix
+            args:
+              name: default
+              fallbackUri: 'forward:/defaultfallback'
         - id: host_route
           uri: http://localhost:8085
           predicates:
-            - Path=/a/**
+            - Path=/test/echo/**
           filters:
-            - StripPrefix=1
-        - id: host_route
-          uri: http://localhost:8085
-          predicates:
-            - Path=/b/**
-          filters:
-            - StripPrefix=1
+          - StripPrefix=1
+          - name: CircuitBreaker
+            args:
+              name: default
+              fallbackUri: 'forward:/defaultfallback'
   redis:
     host: localhost
-filters:
-  # redis限流 ， filter名称必须是RequestRateLimiter
-  - name: RequestRateLimiter
-    args:
-      # 使用SpEL名称引用Bean，与上面新建的RateLimiterConfig类中的bean的name相同
-      key-resolver: '#{@remoteAddrKeyResolver}'
-      # 每秒最大访问次数
-      redis-rate-limiter.replenishRate: 20
-      # 令牌桶最大容量
-      redis-rate-limiter.burstCapacity: 20
+hystrix:
+  command:
+    default:
+      circuitBreaker:
+        enable: true
+        requestVolumeThreshold: 10
+        sleepWindowInMilliseconds: 5000
+        errorThresholdPercentage: 50
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          semaphore:
+            maxConcurrentRequests: 100
+          thread:
+            timeoutInMilliseconds: 3000

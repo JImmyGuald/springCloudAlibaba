@@ -21,9 +21,5 @@ public class GatewayRoutes {
                 )
                 .build();
     }*/
-    @Bean(value = "remoteAddrKeyResolver")
-    public KeyResolver remoteAddrKeyResolver() {
-        return exchange -> Mono.just(exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
-    }
 
 }
