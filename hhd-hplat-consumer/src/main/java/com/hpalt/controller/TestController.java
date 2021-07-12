@@ -145,8 +145,8 @@ public class TestController {
 
 	@GetMapping("/rpcv5/{message}")
 	public ResponseEntity<String> rpcV5(@PathVariable("message") String message){
+		System.out.println("/rpcv5");
 		ResponseEntity<String> responseEntity = testI.echo(message);
-		int i = 1/0;
 		if(responseEntity.getStatusCode()==HttpStatus.OK){
 			return ResponseEntity.ok(String.format("远程调用成功，结果为%s",responseEntity.getBody())) ;
 		}

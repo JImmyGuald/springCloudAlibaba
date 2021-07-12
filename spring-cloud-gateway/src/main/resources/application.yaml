@@ -1,4 +1,23 @@
 spring:
+  zipkin:
+    enabled: true
+    base-url: http://127.0.0.1:9411/ #zipkin地址
+    sender:
+      type: rabbit
+  sleuth:
+    enabled: true
+    sampler:
+      probability: 1.0
+    http:
+      legacy:
+        enabled: true
+  rabbitmq:
+    host: localhost
+    port: ${RABBIT_MQ_PORT:5672}
+    username: ${RABBIT_MQ_USERNAME:guest}
+    password: ${RABBIT_MQ_PASSWORD:guest}
+  application:
+    name: springcloudgateway
   cloud:
     nacos:
       discovery:
@@ -38,10 +57,6 @@ spring:
             - Path=/test/echo/**
           filters:
           - StripPrefix=1
-          - name: CircuitBreaker
-            args:
-              name: default
-              fallbackUri: 'forward:/defaultfallback'
   redis:
     host: localhost
 hystrix:
@@ -58,4 +73,7 @@ hystrix:
           semaphore:
             maxConcurrentRequests: 100
           thread:
-            timeoutInMilliseconds: 3000
+            timeoutInMilliseconds: 8000
+logging:
+  level:
+    com.springboot.cloud: debug

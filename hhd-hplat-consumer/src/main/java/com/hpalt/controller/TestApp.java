@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
-@EnableDiscoveryClient(autoRegister = false) // 服务的发现和注册
+//@EnableDiscoveryClient(autoRegister = false) // 服务的发现和注册
 @RestController
 @EnableFeignClients
 public class TestApp {
